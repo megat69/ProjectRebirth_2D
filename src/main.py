@@ -6,6 +6,7 @@ import os
 import json
 import sys
 from math import sqrt
+from random import randint
 
 from perlin_numpy import generate_perlin_noise_2d
 from tiles import Tile, Building
@@ -73,9 +74,10 @@ class Game:
 			"sane_river": Tile("sane_river", "░", color=Back.CYAN),
 			"sane_land": Tile("sane_land", "▒", color=Back.GREEN),
 			"sane_hilltop": Tile("sane_hilltop", "▓", color=Back.GREEN),
+			"rock": Tile("rock", "O", position=2, color=Back.LIGHTBLACK_EX),
 
 			# Buildings
-			"Power plant": Building("P", position=2, buildable_on=land_buildable, build_action=power_plant_action),
+			"Power plant": Building("P", position=2, buildable_on=("rock",), build_action=power_plant_action),
 			"Land sanitizer": Building("L", position=2, buildable_on=land_buildable, build_action=land_sanitizer_action),
 			"Water pump": Building("W", position=2, buildable_on=("desolated_river", "sane_river"), build_action=water_pump_action),
 			"Water dispenser": Building("D", position=2, buildable_on=land_buildable, build_action=water_dispenser_action)
@@ -111,6 +113,8 @@ class Game:
 				return_val = self.chars["desolated_river"].copy()
 			elif val > 0.4:  # Cliff, one above
 				return_val = self.chars["desolated_hilltop"].copy()
+			elif 0.2 < val < 0.25 and randint(1, 5) >= 3:
+				return_val = self.chars["rock"].copy()
 			return return_val
 
 		self.tilemap = [[calculate_height(x, z) for x in range(-self.playable_area_size // 2, self.playable_area_size // 2)] \
