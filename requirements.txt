@@ -1,1 +1,2 @@
 UnicodeEngine-RPG
+colorama
